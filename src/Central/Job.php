@@ -23,6 +23,8 @@ class Job
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
+    const VERSION = 0.2.1
+
     public function __construct($name, $arguments, $logger)
     {
         $this->_name = $name;
@@ -117,6 +119,7 @@ class Job
 
         $this->_storage->add(array(
             'Id'        => uniqid(),
+            'Version'   => self::VERSION,
             'Job'       => $this->_name,
             'Script'    => basename($this->_arguments[0]),
             'Arguments' => implode(' ', array_slice($this->_arguments, 1)),
