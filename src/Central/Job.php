@@ -63,6 +63,14 @@ class Job
 
     public function getDuration()
     {
+        if ($this->_finished === null) {
+            return null;
+        }
+
+        if ($this->_started === null) {
+            return null;
+        }
+
         return round($this->_finished - $this->_started, 2);
     }
 
