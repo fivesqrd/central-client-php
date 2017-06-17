@@ -24,6 +24,7 @@ try {
 
     $job->log()->error('Something bad happened');
     $job->log()->debug('Just saying');
+    $job->log()->append('Failed', 'error');
     
     $job->finished(true);
 } catch (\Exception $e) {
