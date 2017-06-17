@@ -23,7 +23,7 @@ class Job
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    const VERSION = '0.2.1';
+    const VERSION = '0.2.3';
 
     public function __construct($name, $arguments, $logger)
     {

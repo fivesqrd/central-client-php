@@ -5,19 +5,34 @@ class Log
 {
     protected $_entries = array();
 
-    public function error($string)
+    public function error($value)
     {
+        if ($value instanceof \Exception) {
+            array_push($this->_entries, $this->_getExceptionEntry($value));
+            return;
+        }
+
         array_push($this->_entries, array(
             'Timestamp' => date('Y-m-d H:i:s'),
-            'Message'   => $string,
+            'Message'   => $value,
             'Type'      => 'error'
         ));
+    }
+
+    protected function _getExceptionEntry($e)
+    {
+        return array(
+            'Timestamp' => date('Y-m-d H:i:s'),
+            'Message'   => $e->getMessage(),
+            'Type'      => 'error',
+            'Trace'     => $e->getTrace()
+        );
     }
 
     /**
      * Append string to the last entry and override type
      */
-    public function append($message, $type = null)
+    public function append($value, $type = null)
     {
         $index = count($this->_entries) - 1;
 
@@ -29,11 +44,20 @@ class Log
             $current['Type'] = $type;
         }
 
+        /* Initiate the array if it doesn't exit */
         if (!array_key_exists('Extra', $current)) {
             $current['Extra'] = array();
         }
 
-        array_push($current['Extra'], $message);
+        /* If we have exception data, we'll update the entry accordingly */
+        if ($value instanceof \Exception) {
+            $current['Trace'] = $value->getTrace();
+            $current['Type'] = 'error';
+            array_push($current['Extra'], $value->getMessage());
+        } else {
+            array_push($current['Extra'], $value);
+        }
+
     }
 
     public function debug($string)
