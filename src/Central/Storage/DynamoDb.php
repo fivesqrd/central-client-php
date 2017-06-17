@@ -16,6 +16,7 @@ class DynamoDb
         'arguments' => ['name' => 'Arguments', 'type' => 'S'],
         'timestamp' => ['name' => 'Timestamp', 'type' => 'S'],
         'duration'  => ['name' => 'Duration', 'type' => 'N'],
+        'memory'    => ['name' => 'Memory', 'type' => 'N'],
         'host'      => ['name' => 'Host', 'type' => 'S'],
         'status'    => ['name' => 'Status', 'type' => 'S'],
         'message'   => ['name' => 'Message', 'type' => 'S'],

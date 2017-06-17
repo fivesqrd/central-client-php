@@ -17,6 +17,8 @@ class Job
 
     protected $_message;
 
+    protected $_memory;
+
     const STATUS_ERROR     = 'error';
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
@@ -43,6 +45,7 @@ class Job
     public function finished($status = true)
     {
         $this->_finished = microtime(true);
+        $this->_memory = memory_get_peak_usage();
 
         if ($status instanceof \Exception) {
             $this->_status = self::STATUS_EXCEPTION;
@@ -72,6 +75,26 @@ class Job
         return $this->_status;
     }
 
+    public function getName()
+    {
+        return $this->_name;
+    }
+
+    public function getSummary()
+    {
+        $message = null;
+
+        if ($this->getExitMessage()) {
+            $message = ": '{$this->getExitMessage}'";
+        }
+
+        return date('Y-m-d H:i:s') 
+            . " {$this->getName()} completed with {$this->getExitStatus()} status" 
+            . $message . '.' 
+            . " Execution time was {$this->getDuration()} seconds."
+            . " Peak memory usage was {$this->_memory} bytes.";
+    }
+
     public function save($expiry = null)
     {
         if (!$this->_storage) {
@@ -85,6 +108,7 @@ class Job
             'arguments' => implode(' ', array_slice($this->_arguments, 1)),
             'timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
             'duration'  => $this->getDuration(),
+            'memory'    => $this->_memory,
             'host'      => gethostname(),
             'status'    => $this->getExitStatus(),
             'message'   => $this->getExitMessage(),
