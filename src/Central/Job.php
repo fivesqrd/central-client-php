@@ -23,7 +23,7 @@ class Job
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    const VERSION = 0.2.1
+    const VERSION = '0.2.1';
 
     public function __construct($name, $arguments, $logger)
     {
@@ -74,6 +74,11 @@ class Job
         }
 
         return round($this->_finished - $this->_started, 2);
+    }
+
+    public function setExitMessage($string)
+    {
+        $this->_message = $string;
     }
 
     public function getExitMessage()

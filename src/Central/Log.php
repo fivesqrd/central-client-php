@@ -22,13 +22,18 @@ class Log
         $index = count($this->_entries) - 1;
 
         /* get last entry is */
-        $current = $this->_entries[$index];
+        $current = &$this->_entries[$index];
 
         /* Append to the message and override the previously set entry type */
-        $this->_entries[$index] = array_merge($this->_entries[$index], array(
-            'Message' => $current['Message'] . '... ' . $message,
-            'Type'    => $type ?: $current['Type']
-        ));
+        if ($type !== null && $type != $current['Type']) {
+            $current['Type'] = $type;
+        }
+
+        if (!array_key_exists('Extra', $current)) {
+            $current['Extra'] = array();
+        }
+
+        array_push($current['Extra'], $message);
     }
 
     public function debug($string)
