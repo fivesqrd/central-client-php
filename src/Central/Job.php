@@ -118,7 +118,7 @@ class Job
         $this->_storage->add(array(
             'Id'        => uniqid(),
             'Job'       => $this->_name,
-            'Script'    => $this->_arguments[0],
+            'Script'    => basename($this->_arguments[0]),
             'Arguments' => implode(' ', array_slice($this->_arguments, 1)),
             'Timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
             'Duration'  => $this->getDuration(),
