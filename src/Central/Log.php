@@ -17,7 +17,7 @@ class Log
     /**
      * Append string to the last entry and override type
      */
-    public function append($message, $type = 'debug')
+    public function append($message, $type = null)
     {
         $index = count($this->_entries) - 1;
 
@@ -27,7 +27,7 @@ class Log
         /* Append to the message and override the previously set entry type */
         $this->_entries[$index] = array_merge($this->_entries[$index], array(
             'Message' => $current['Message'] . '... ' . $message,
-            'Type'    => $type
+            'Type'    => $type ?: $current['Type']
         ));
     }
 
@@ -38,6 +38,13 @@ class Log
             'Message'   => $string,
             'Type'      => 'debug'
         ));
+    }
+
+    public function getErrors()
+    {
+        return array_filter($this->_entries, function ($entry) {
+            return ($entry['Type'] == 'error');
+        });
     }
 
     public function toArray()

@@ -119,7 +119,8 @@ class Job
             'Status'    => $this->getExitStatus(),
             'Message'   => $this->getExitMessage(),
             'Expires'   => $expiry,
-            'Logs'      => $this->log()->toArray(),
+            'Errors'    => count($this->log()->getErrors()),
+            'Entries'   => $this->log()->toArray(),
         ));
     }
 }
