@@ -22,8 +22,8 @@ $job = Central::job('CreateExampleStats', $argv)->started();
 try {
     //work done in between the lines
 
-    //$job->log()->error($message);
-    //$job->log()->debug($message);
+    $job->log()->error('Something bad happened');
+    $job->log()->debug('Just saying');
     
     $job->finished(true);
 } catch (\Exception $e) {

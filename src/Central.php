@@ -6,7 +6,7 @@ class Central
 
     public static function job($name, $args)
     {
-        $object = new Central\Job($name, $args);
+        $object = new Central\Job($name, $args, new Central\Log());
 
         if (isset(self::$options['aws'])) {
             $object->setStorage(

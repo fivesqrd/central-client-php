@@ -3,8 +3,6 @@ namespace Central;
 
 class Job
 {
-    protected $_log;
-
     protected $_storage;
 
     protected $_started;
@@ -19,14 +17,17 @@ class Job
 
     protected $_memory;
 
+    protected $_logger;
+
     const STATUS_ERROR     = 'error';
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    public function __construct($name, $arguments)
+    public function __construct($name, $arguments, $logger)
     {
         $this->_name = $name;
         $this->_arguments = $arguments;
+        $this->_logger = $logger;
     }
 
     public function setStorage($value)
@@ -80,6 +81,11 @@ class Job
         return $this->_name;
     }
 
+    public function log()
+    {
+        return $this->_logger;
+    }
+
     public function getSummary()
     {
         $message = null;
@@ -102,18 +108,18 @@ class Job
         }
 
         $this->_storage->add(array(
-            'id'        => uniqid(),
-            'job'       => $this->_name,
-            'script'    => $this->_arguments[0],
-            'arguments' => implode(' ', array_slice($this->_arguments, 1)),
-            'timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
-            'duration'  => $this->getDuration(),
-            'memory'    => $this->_memory,
-            'host'      => gethostname(),
-            'status'    => $this->getExitStatus(),
-            'message'   => $this->getExitMessage(),
-            'expires'   => $expiry,
-            //'logs'    => ($this->log()->getErrors(),
+            'Id'        => uniqid(),
+            'Job'       => $this->_name,
+            'Script'    => $this->_arguments[0],
+            'Arguments' => implode(' ', array_slice($this->_arguments, 1)),
+            'Timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
+            'Duration'  => $this->getDuration(),
+            'Memory'    => $this->_memory,
+            'Host'      => gethostname(),
+            'Status'    => $this->getExitStatus(),
+            'Message'   => $this->getExitMessage(),
+            'Expires'   => $expiry,
+            'Logs'      => $this->log()->toArray(),
         ));
     }
 }
