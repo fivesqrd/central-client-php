@@ -30,6 +30,6 @@ try {
     $job->finished($e);
 }
 
-$job->save();
+$job->save(strtotime('+7 days'));
 
 //echo "Job completed: {$job->getSummary()}\n";

@@ -19,6 +19,7 @@ class DynamoDb
         'host'      => ['name' => 'Host', 'type' => 'S'],
         'status'    => ['name' => 'Status', 'type' => 'S'],
         'message'   => ['name' => 'Message', 'type' => 'S'],
+        'expires'   => ['name' => 'Expires', 'type' => 'N'],
     );
 
     public function __construct($config) 

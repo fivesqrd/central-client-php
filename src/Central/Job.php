@@ -72,7 +72,7 @@ class Job
         return $this->_status;
     }
 
-    public function save()
+    public function save($expiry = null)
     {
         if (!$this->_storage) {
             throw new Exception("Save operation is not possible if no config is provided");
@@ -88,6 +88,7 @@ class Job
             'host'      => gethostname(),
             'status'    => $this->getExitStatus(),
             'message'   => $this->getExitMessage(),
+            'expires'   => $expiry,
             //'logs'    => ($this->log()->getErrors(),
         ));
     }
