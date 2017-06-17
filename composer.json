@@ -1,0 +1,24 @@
+{
+	"name": "fivesqrd/central",
+	"description": "Central job logging library for multi server implementations",
+	"require": {
+        "php": ">=5.4.0"
+    },
+	"require-dev": {
+		"aws/aws-sdk-php": "^3.29"
+    },
+    "autoload": {
+        "psr-0": {
+            "Central": "src"
+        }
+    },
+    "version": "0.1",
+    "license": ["MIT License"],
+    "authors": [
+        {
+            "name": "Christian Burger",
+            "email": "christian@fivesqrd.com",
+            "role": "Developer"
+        }
+    ]
+}
