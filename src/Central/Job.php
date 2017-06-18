@@ -20,6 +20,7 @@ class Job
     protected $_logger;
 
     const STATUS_ERROR     = 'error';
+    const STATUS_MIXED     = 'mixed';
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
@@ -57,6 +58,9 @@ class Job
         } elseif (is_string($status)) {
             $this->_status = self::STATUS_ERROR;
             $this->_message = $status;
+        } elseif (count($this->log()->getErrors()) > 0) {
+            $this->_status = self::STATUS_MIXED;
+            $this->_message = 'Some error entries detected';
         } else {
             $this->_status = self::STATUS_SUCCESS;
         }
