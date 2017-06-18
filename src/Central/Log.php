@@ -25,7 +25,7 @@ class Log
             'Timestamp' => date('Y-m-d H:i:s'),
             'Message'   => $e->getMessage(),
             'Type'      => 'error',
-            'Trace'     => $e->getTrace()
+            'Trace'     => $e->getTraceAsString()
         );
     }
 
