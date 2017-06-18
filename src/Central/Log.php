@@ -36,6 +36,10 @@ class Log
     {
         $index = count($this->_entries) - 1;
 
+        if ($index < 0) {
+            return;
+        }
+
         /* get last entry is */
         $current = &$this->_entries[$index];
 

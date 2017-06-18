@@ -53,7 +53,7 @@ class Job
         if ($status instanceof \Exception) {
             $this->_status = self::STATUS_EXCEPTION;
             $this->_message = $status->getMessage();
-            $this->log()->append($status);
+            $this->log()->error($status);
         } elseif (is_string($status)) {
             $this->_status = self::STATUS_ERROR;
             $this->_message = $status;
