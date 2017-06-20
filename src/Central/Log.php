@@ -55,7 +55,7 @@ class Log
 
         /* If we have exception data, we'll update the entry accordingly */
         if ($value instanceof \Exception) {
-            $current['Trace'] = $value->getTrace();
+            $current['Trace'] = $value->getTraceAsString();
             $current['Type'] = 'error';
             array_push($current['Extra'], $value->getMessage());
         } else {
