@@ -114,9 +114,9 @@ class Job
             $message = ": '{$this->getExitMessage}'";
         }
 
-        return date('Y-m-d H:i:s') 
-            . " {$this->getName()} completed with {$this->getExitStatus()} status" 
-            . $message . '.' 
+        return date('Y-m-d H:i:s')
+            . " {$this->getName()} completed with {$this->getExitStatus()}"
+            . " status {$message}."
             . " Execution time was {$this->getDuration()} seconds."
             . " Peak memory usage was {$this->_memory} bytes.";
     }
@@ -124,7 +124,9 @@ class Job
     public function save($expiry = null)
     {
         if (!$this->_storage) {
-            throw new Exception("Save operation is not possible if no config is provided");
+            throw new Exception(
+              "Save operation is not possible if no config is provided"
+            );
         }
 
         $this->_storage->add(array(

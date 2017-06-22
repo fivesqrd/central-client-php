@@ -30,6 +30,7 @@ class Log
     }
 
     /**
+     *
      * Append string to the last entry and override type
      */
     public function append($value, $type = null)
@@ -41,19 +42,23 @@ class Log
         }
 
         /* get last entry is */
+
         $current = &$this->_entries[$index];
 
         /* Append to the message and override the previously set entry type */
+
         if ($type !== null && $type != $current['Type']) {
             $current['Type'] = $type;
         }
 
         /* Initiate the array if it doesn't exit */
+
         if (!array_key_exists('Extra', $current)) {
             $current['Extra'] = array();
         }
 
         /* If we have exception data, we'll update the entry accordingly */
+
         if ($value instanceof \Exception) {
             $current['Trace'] = $value->getTraceAsString();
             $current['Type'] = 'error';
