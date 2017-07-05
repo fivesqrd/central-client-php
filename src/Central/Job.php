@@ -111,7 +111,7 @@ class Job
         $message = null;
 
         if ($this->getExitMessage()) {
-            $message = ": '{$this->getExitMessage}'";
+            $message = ": '{$this->getExitMessage()}'";
         }
 
         return date('Y-m-d H:i:s')
