@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c047bd676e11a5fed982eef1cbda0580",
+    "content-hash": "4cb3d244b69d1fe93a0debefbe65a231",
     "packages": [],
     "packages-dev": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.29.7",
+            "version": "3.31.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "76540001ff938c072db5367a7c945296984b999b"
+                "reference": "551865464a2779b9038aa871094a24bb9e254e24"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/76540001ff938c072db5367a7c945296984b999b",
-                "reference": "76540001ff938c072db5367a7c945296984b999b",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/551865464a2779b9038aa871094a24bb9e254e24",
+                "reference": "551865464a2779b9038aa871094a24bb9e254e24",
                 "shasum": ""
             },
             "require": {
@@ -85,20 +85,60 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-06-16T17:29:33+00:00"
+            "time": "2017-07-05T17:26:26+00:00"
         },
         {
-            "name": "guzzlehttp/guzzle",
-            "version": "6.2.3",
+            "name": "fivesqrd/mutex",
+            "version": "0.3.x-dev",
             "source": {
                 "type": "git",
-                "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "8d6c6cc55186db87b7dc5009827429ba4e9dc006"
+                "url": "https://github.com/Five-Squared/Mutex.git",
+                "reference": "acb79b2387ac9154a1958feb782e01f030ee293e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/8d6c6cc55186db87b7dc5009827429ba4e9dc006",
-                "reference": "8d6c6cc55186db87b7dc5009827429ba4e9dc006",
+                "url": "https://api.github.com/repos/Five-Squared/Mutex/zipball/acb79b2387ac9154a1958feb782e01f030ee293e",
+                "reference": "acb79b2387ac9154a1958feb782e01f030ee293e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "^3.29"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Mutex": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT License"
+            ],
+            "authors": [
+                {
+                    "name": "Christian Burger",
+                    "email": "christian@fivesqrd.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Shared locking library for multi server implementations",
+            "time": "2017-06-18T17:49:32+00:00"
+        },
+        {
+            "name": "guzzlehttp/guzzle",
+            "version": "6.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/guzzle.git",
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/f4db5a78a5ea468d4831de7f0bf9d9415e348699",
+                "reference": "f4db5a78a5ea468d4831de7f0bf9d9415e348699",
                 "shasum": ""
             },
             "require": {
@@ -108,8 +148,11 @@
             },
             "require-dev": {
                 "ext-curl": "*",
-                "phpunit/phpunit": "^4.0",
+                "phpunit/phpunit": "^4.0 || ^5.0",
                 "psr/log": "^1.0"
+            },
+            "suggest": {
+                "psr/log": "Required for using the Log middleware"
             },
             "type": "library",
             "extra": {
@@ -147,7 +190,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2017-02-28T22:50:30+00:00"
+            "time": "2017-06-22T18:50:49+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -373,7 +416,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "fivesqrd/mutex": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

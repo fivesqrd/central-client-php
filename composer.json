@@ -5,7 +5,8 @@
         "php": ">=5.4.0"
     },
 	"require-dev": {
-		"aws/aws-sdk-php": "^3.29"
+		"aws/aws-sdk-php": "^3.29",
+		"fivesqrd/mutex": "0.3.x-dev"
     },
     "autoload": {
         "psr-0": {
