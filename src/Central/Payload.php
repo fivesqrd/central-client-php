@@ -9,10 +9,14 @@ class Payload
 
     const VERSION = '0.3.0';
 
-    public function __construct($interface, $expiry = null)
+    public function __construct($spec, $expiry = null)
     {
-        $this->_interface = $interface;
         $this->_expiry = $expiry;
+        $this->_interface = $spec['interface'];
+
+        if (isset($spec['profile'])) {
+            $this->_profile = $spec['profile'];
+        }
     }
 
     public function toArray()
@@ -33,6 +37,7 @@ class Payload
             'Expires'   => $this->_expiry,
             'Errors'    => count($this->_interface->log()->getErrors()),
             'Entries'   => $this->_interface->log()->toArray(),
+            'Queries'   => isset($this->_profile) ? $this->_profile->toArray() : array()
         );
     }
 }

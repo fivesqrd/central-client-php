@@ -38,6 +38,13 @@ if (isset($switches['lock']) && !$lock->acquire()) {
 /* Start the job logging */
 $job = Central::job($switches['job'], $argv)->started();
 
+/* Instantiate the db profiler */
+if (isset($switches['log'])) {
+    $profile = new Central\Profile(
+        Zend_Registry::get('db')->getProfiler(), 1
+    );
+}
+
 try {
     /* Construct the class name to handle the job */
     $class = 'Application_Job_' . $switches['job'];
@@ -63,7 +70,10 @@ try {
 
 /* Persist logs for x days */
 if (isset($switches['log'])) {
-    Central::save($job, strtotime('+' . $switches['log'] . ' days'));
+    Central::save(
+        ['interface' => $job, 'profile' => $profile],
+        strtotime('+' . $switches['log'] . ' days')
+    );
 }
 
 /* Release the lock */

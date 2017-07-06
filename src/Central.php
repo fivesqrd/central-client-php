@@ -6,10 +6,12 @@ class Central
 
     public static function job($name, $args)
     {
-        return new Central\Job($name, $args, new Central\Log());
+        return new Central\Job(
+            $name, $args, new Central\Log()
+        );
     }
 
-    public static function save($interface, $expiry = null)
+    public static function save($spec, $expiry = null)
     {
         if (isset(self::$options['aws'])) {
             throw new Exception(
@@ -17,8 +19,8 @@ class Central
             );
         }
 
-        $storage = new Central\Storage\DynamoDb(self::$options));
+        $storage = new Central\Storage\DynamoDb(self::$options);
 
-        $storage->add(new Central\Payload($interface, $expiry));
+        $storage->add(new Central\Payload($spec, $expiry));
     }
 }
