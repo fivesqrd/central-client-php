@@ -13,7 +13,7 @@ class Central
     {
         if (isset(self::$options['aws'])) {
             throw new Exception(
-              "Save operation is not possible if no config is provided"
+              "Save operation is not possible if no storage config is provided"
             );
         }
 
