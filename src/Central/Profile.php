@@ -8,7 +8,7 @@ class Profile
     public function __construct($adapter, $ratio = null)
     {
         $this->_adapter = $adapter;
-        $profiler->setEnabled($this->_getRandomFlag($ratio));
+        $this->_adapter->setEnabled($this->_getRandomFlag($ratio));
     }
 
     protected function _getRandomFlag($ratio)
