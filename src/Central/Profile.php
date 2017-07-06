@@ -37,9 +37,9 @@ class Profile
 
         foreach ($this->getQueries() as $profile) {
             array_push($queries, array(
-                'query'     => $profile->getQuery(),
-                'params'    => $profile->getQueryParams(),
-                'duration'  => $profile->getElapsedSecs()
+                'Query'     => $profile->getQuery(),
+                'Params'    => $profile->getQueryParams(),
+                'Duration'  => $profile->getElapsedSecs()
             ));
         }
 
