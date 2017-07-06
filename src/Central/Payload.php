@@ -5,6 +5,8 @@ class Payload
 {
     protected $_interface;
 
+    protected $_profile;
+
     protected $_expiry;
 
     const VERSION = '0.3.0';
@@ -26,8 +28,8 @@ class Payload
             'Version'   => self::VERSION,
             'Name'      => $this->_interface->getName(),
             'Interface' => php_sapi_name() === 'cli' ? 'CLI' : 'WEB',
-            'Script'    => basename($this->_interface()->getArguments()[0]),
-            'Arguments' => implode(' ', array_slice($this->_interface()->getArguments(), 1)),
+            'Script'    => basename($this->_interface->getArguments()[0]),
+            'Arguments' => implode(' ', array_slice($this->_interface->getArguments(), 1)),
             'Timestamp' => date('Y-m-d H:i:s', $this->_interface->getTimestamp()),
             'Duration'  => $this->_interface->getDuration(),
             'Memory'    => $this->_interface->getPeakMemoryUsed(),
@@ -37,7 +39,7 @@ class Payload
             'Expires'   => $this->_expiry,
             'Errors'    => count($this->_interface->log()->getErrors()),
             'Entries'   => $this->_interface->log()->toArray(),
-            'Queries'   => isset($this->_profile) ? $this->_profile->toArray() : array()
+            'Queries'   => $this->_profile ? $this->_profile->toArray() : array()
         );
     }
 }
