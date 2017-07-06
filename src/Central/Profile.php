@@ -3,11 +3,11 @@ namespace Central;
 
 class Profile
 {
-    protected $_profiler;
+    protected $_adapter;
 
-    public function __construct($profiler, $ratio = null)
+    public function __construct($adapter, $ratio = null)
     {
-        $this->_profiler = $profiler;
+        $this->_adapter = $adapter;
         $profiler->setEnabled($this->_getRandomFlag($ratio));
     }
 
