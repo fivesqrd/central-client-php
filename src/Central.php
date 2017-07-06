@@ -13,7 +13,7 @@ class Central
 
     public static function save($spec, $expiry = null)
     {
-        if (isset(self::$options['aws'])) {
+        if (!isset(self::$options['aws'])) {
             throw new Exception(
               "Save operation is not possible if no storage config is provided"
             );
