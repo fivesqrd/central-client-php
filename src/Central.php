@@ -6,14 +6,19 @@ class Central
 
     public static function job($name, $args)
     {
-        $object = new Central\Job($name, $args, new Central\Log());
+        return new Central\Job($name, $args, new Central\Log());
+    }
 
+    public static function save($interface, $expiry = null)
+    {
         if (isset(self::$options['aws'])) {
-            $object->setStorage(
-                new Central\Storage\DynamoDb(self::$options)
+            throw new Exception(
+              "Save operation is not possible if no config is provided"
             );
         }
 
-        return $object;
+        $storage = new Central\Storage\DynamoDb(self::$options));
+
+        $storage->add(new Central\Payload($interface, $expiry));
     }
 }

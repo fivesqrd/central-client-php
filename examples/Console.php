@@ -63,7 +63,7 @@ try {
 
 /* Persist logs for x days */
 if (isset($switches['log'])) {
-    $job->save(strtotime('+' . $switches['log'] . ' days'));
+    Central::save($job, strtotime('+' . $switches['log'] . ' days'));
 }
 
 /* Release the lock */

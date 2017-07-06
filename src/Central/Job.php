@@ -3,8 +3,6 @@ namespace Central;
 
 class Job
 {
-    protected $_storage;
-
     protected $_started;
 
     protected $_finished;
@@ -24,18 +22,11 @@ class Job
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    const VERSION = '0.2.3';
-
     public function __construct($name, $arguments, $logger)
     {
         $this->_name = $name;
         $this->_arguments = $arguments;
         $this->_logger = $logger;
-    }
-
-    public function setStorage($value)
-    {
-        $this->_storage = $value;
     }
 
     public function started()
@@ -101,6 +92,21 @@ class Job
         return $this->_name;
     }
 
+    public function getArguments()
+    {
+        return $this->_arguments;
+    }
+
+    public function getTimestamp()
+    {
+        return $this->_timestamp;
+    }
+
+    public function getPeakMemoryUsed()
+    {
+        return $this->_memory;
+    }
+
     public function log()
     {
         return $this->_logger;
@@ -119,31 +125,5 @@ class Job
             . " status {$message}."
             . " Execution time was {$this->getDuration()} seconds."
             . " Peak memory usage was {$this->_memory} bytes.";
-    }
-
-    public function save($expiry = null)
-    {
-        if (!$this->_storage) {
-            throw new Exception(
-              "Save operation is not possible if no config is provided"
-            );
-        }
-
-        $this->_storage->add(array(
-            'Id'        => uniqid(),
-            'Version'   => self::VERSION,
-            'Job'       => $this->_name,
-            'Script'    => basename($this->_arguments[0]),
-            'Arguments' => implode(' ', array_slice($this->_arguments, 1)),
-            'Timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
-            'Duration'  => $this->getDuration(),
-            'Memory'    => $this->_memory,
-            'Host'      => gethostname(),
-            'Status'    => $this->getExitStatus(),
-            'Message'   => $this->getExitMessage(),
-            'Expires'   => $expiry,
-            'Errors'    => count($this->log()->getErrors()),
-            'Entries'   => $this->log()->toArray(),
-        ));
     }
 }
