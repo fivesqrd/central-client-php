@@ -1,11 +1,11 @@
 <?php
 if (count($argv) < 3) {
-    echo "Usage: {$argv[0]} --env=production --job=<name> --debug --lock --log=30 <param1> <param2>...\n";
+    echo "Usage: {$argv[0]} --env=production --job=<name> --debug --lock --log=30 --profile=1 <param1> <param2>...\n";
     exit;
 }
 
 $switches = getopt(
-    null, array('env:', 'job:', 'lock', 'debug', 'log::')
+    null, array('env:', 'job:', 'lock', 'debug', 'log::', 'profile::')
 );
 
 /* Check the required values */
@@ -38,10 +38,13 @@ if (isset($switches['lock']) && !$lock->acquire()) {
 /* Start the job logging */
 $job = Central::job($switches['job'], $argv)->started();
 
+/* Instantiate the logger */
+$logger = Central::log();
+
 /* Instantiate the db profiler */
-if (isset($switches['log'])) {
+if (isset($switches['profile'])) {
     $profile = new Central\Profile(
-        Zend_Registry::get('db')->getProfiler(), 1
+        Zend_Registry::get('db-read')->getProfiler(), $switches['profile']
     );
 }
 
@@ -59,19 +62,19 @@ try {
 
     /* Invoke the job handler */
     $result = (new $class($config))->run(
-        $job->log(), array_slice($argv, $optindex)
+        $logger, array_slice($argv, $optindex)
     );
 
     /* Stop the recording */
-    $job->finished(true);
+    $job->finished($logger, true);
 } catch (Exception $e) {
-    $job->finished($e);
+    $job->finished($logger, $e);
 }
 
 /* Persist logs for x days */
 if (isset($switches['log'])) {
     Central::save(
-        ['interface' => $job, 'profile' => $profile],
+        ['interface' => $job, 'log' => $logger, 'profile' => isset($profile) ? $profile : null],
         strtotime('+' . $switches['log'] . ' days')
     );
 }
@@ -83,5 +86,6 @@ if (isset($switches['lock'])) {
 
 if (isset($switches['debug'])) {
     print_r($job->log()->toArray());
+    //print_r($profile->toArray());
     echo $job->getSummary() . "\n";
 }
