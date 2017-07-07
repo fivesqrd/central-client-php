@@ -9,12 +9,15 @@ class Payload
 
     protected $_expiry;
 
+    protected $_log;
+
     const VERSION = '0.3.0';
 
     public function __construct($spec, $expiry = null)
     {
-        $this->_expiry = $expiry;
+        $this->_expiry    = $expiry;
         $this->_interface = $spec['interface'];
+        $this->_log       = $spec['log'];
 
         if (isset($spec['profile'])) {
             $this->_profile = $spec['profile'];
@@ -37,8 +40,8 @@ class Payload
             'Status'    => $this->_interface->getExitStatus(),
             'Message'   => $this->_interface->getExitMessage(),
             'Expires'   => $this->_expiry,
-            'Errors'    => count($this->_interface->log()->getErrors()),
-            'Entries'   => $this->_interface->log()->toArray(),
+            'Errors'    => count($this->_log->getErrors()),
+            'Entries'   => $this->_log->toArray(),
             'Queries'   => $this->_profile ? $this->_profile->toArray() : array()
         );
     }

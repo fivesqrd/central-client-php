@@ -15,18 +15,15 @@ class Job
 
     protected $_memory;
 
-    protected $_logger;
-
     const STATUS_ERROR     = 'error';
     const STATUS_MIXED     = 'mixed';
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    public function __construct($name, $arguments, $logger)
+    public function __construct($name, $arguments)
     {
         $this->_name = $name;
         $this->_arguments = $arguments;
-        $this->_logger = $logger;
     }
 
     public function started()
@@ -37,7 +34,7 @@ class Job
         return $this;
     }
 
-    public function finished($status = true)
+    public function finished($log, $status = true)
     {
         $this->_finished = microtime(true);
         $this->_memory = memory_get_peak_usage();
@@ -45,13 +42,12 @@ class Job
         if ($status instanceof \Exception) {
             $this->_status = self::STATUS_EXCEPTION;
             $this->_message = $status->getMessage();
-            $this->log()->error($status);
         } elseif (is_string($status)) {
             $this->_status = self::STATUS_ERROR;
             $this->_message = $status;
-        } elseif (count($this->log()->getErrors()) > 0) {
+        } elseif (count($log->getErrors()) > 0) {
             $this->_status = self::STATUS_MIXED;
-            $this->_message = 'Some error entries detected';
+            $this->_message = 'Log entries with errors detected';
         } else {
             $this->_status = self::STATUS_SUCCESS;
         }
@@ -105,11 +101,6 @@ class Job
     public function getPeakMemoryUsed()
     {
         return $this->_memory;
-    }
-
-    public function log()
-    {
-        return $this->_logger;
     }
 
     public function getSummary()

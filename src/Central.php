@@ -6,9 +6,12 @@ class Central
 
     public static function job($name, $args)
     {
-        return new Central\Job(
-            $name, $args, new Central\Log()
-        );
+        return new Central\Job($name, $args);
+    }
+
+    public static function log()
+    {
+        return new Central\Log();
     }
 
     public static function save($spec, $expiry = null)
