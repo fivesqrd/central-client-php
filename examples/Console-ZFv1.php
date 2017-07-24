@@ -22,13 +22,17 @@ $optindex = count($switches) + 1;
 /* Set the application environment */
 define('APPLICATION_ENV', $switches['env']);
 
+/* Set the minimum and maximum lock duration */
+define('LOCK_TIME_MIN', 30);
+define('LOCK_TIME_MAX', 600);
+
 /* Bootstrap the application */
 require_once(__DIR__ . '/Bootstrap.php');
 
 $lock = Mutex::lock(basename($argv[0]) . ':' . $switches['job']);
 
 /* Acquire a lock if the switch was provided */
-if (isset($switches['lock']) && !$lock->acquire()) {
+if (isset($switches['lock']) && !$lock->acquire(LOCK_TIME_MAX)) {
     if (isset($switches['debug'])) {
         echo "Lock could not be acquired, exiting...\n";
     }
@@ -67,6 +71,11 @@ try {
 
     /* Stop the recording */
     $job->finished($logger, true);
+
+    /* Log the job's summary message, if one was provided */
+    if ($result) {
+        $job->setExitMessage($result);
+    }
 } catch (Exception $e) {
     $job->finished($logger, $e);
 }
@@ -79,13 +88,18 @@ if (isset($switches['log'])) {
     );
 }
 
-/* Release the lock */
 if (isset($switches['lock'])) {
-    $lock->release();
+    if ($job->getDuration() > LOCK_TIME_MIN) {
+        /* Release the lock, if job ran longer than the minimum duration */
+        $lock->release();
+    } else {
+        /* If job duration was short, shorten lock expiry as well */
+        $lock->extend(LOCK_TIME_MIN - $job->getDuration());
+    }
 }
 
 if (isset($switches['debug'])) {
-    print_r($job->log()->toArray());
+    print_r($logger->toArray());
     //print_r($profile->toArray());
     echo $job->getSummary() . "\n";
 }
