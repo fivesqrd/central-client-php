@@ -99,6 +99,7 @@ if (isset($switches['lock'])) {
 }
 
 if (isset($switches['debug'])) {
+    /* Write some debug info to stdout */
     print_r($logger->toArray());
     //print_r($profile->toArray());
     echo $job->getSummary() . "\n";
