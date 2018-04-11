@@ -3,8 +3,6 @@ namespace Central;
 
 class Job
 {
-    protected $_storage;
-
     protected $_started;
 
     protected $_finished;
@@ -17,22 +15,15 @@ class Job
 
     protected $_memory;
 
-    protected $_logger;
-
     const STATUS_ERROR     = 'error';
+    const STATUS_MIXED     = 'mixed';
     const STATUS_SUCCESS   = 'success';
     const STATUS_EXCEPTION = 'exception';
 
-    public function __construct($name, $arguments, $logger)
+    public function __construct($name, $arguments)
     {
         $this->_name = $name;
         $this->_arguments = $arguments;
-        $this->_logger = $logger;
-    }
-
-    public function setStorage($value)
-    {
-        $this->_storage = $value;
     }
 
     public function started()
@@ -43,17 +34,20 @@ class Job
         return $this;
     }
 
-    public function finished($status = true)
+    public function finished($log, $status = true)
     {
         $this->_finished = microtime(true);
         $this->_memory = memory_get_peak_usage();
 
         if ($status instanceof \Exception) {
             $this->_status = self::STATUS_EXCEPTION;
-            $this->_message = $message;
+            $this->_message = $status->getMessage();
         } elseif (is_string($status)) {
             $this->_status = self::STATUS_ERROR;
             $this->_message = $status;
+        } elseif (count($log->getErrors()) > 0) {
+            $this->_status = self::STATUS_MIXED;
+            $this->_message = 'Log entries with errors detected';
         } else {
             $this->_status = self::STATUS_SUCCESS;
         }
@@ -63,7 +57,20 @@ class Job
 
     public function getDuration()
     {
+        if ($this->_finished === null) {
+            return null;
+        }
+
+        if ($this->_started === null) {
+            return null;
+        }
+
         return round($this->_finished - $this->_started, 2);
+    }
+
+    public function setExitMessage($string)
+    {
+        $this->_message = $string;
     }
 
     public function getExitMessage()
@@ -81,9 +88,19 @@ class Job
         return $this->_name;
     }
 
-    public function log()
+    public function getArguments()
     {
-        return $this->_logger;
+        return $this->_arguments;
+    }
+
+    public function getTimestamp()
+    {
+        return $this->_timestamp;
+    }
+
+    public function getPeakMemoryUsed()
+    {
+        return $this->_memory;
     }
 
     public function getSummary()
@@ -91,35 +108,13 @@ class Job
         $message = null;
 
         if ($this->getExitMessage()) {
-            $message = ": '{$this->getExitMessage}'";
+            $message = ": '{$this->getExitMessage()}'";
         }
 
-        return date('Y-m-d H:i:s') 
-            . " {$this->getName()} completed with {$this->getExitStatus()} status" 
-            . $message . '.' 
+        return date('Y-m-d H:i:s')
+            . " {$this->getName()} completed with {$this->getExitStatus()}"
+            . " status {$message}."
             . " Execution time was {$this->getDuration()} seconds."
             . " Peak memory usage was {$this->_memory} bytes.";
-    }
-
-    public function save($expiry = null)
-    {
-        if (!$this->_storage) {
-            throw new Exception("Save operation is not possible if no config is provided");
-        }
-
-        $this->_storage->add(array(
-            'Id'        => uniqid(),
-            'Job'       => $this->_name,
-            'Script'    => $this->_arguments[0],
-            'Arguments' => implode(' ', array_slice($this->_arguments, 1)),
-            'Timestamp' => date('Y-m-d H:i:s', $this->_timestamp),
-            'Duration'  => $this->getDuration(),
-            'Memory'    => $this->_memory,
-            'Host'      => gethostname(),
-            'Status'    => $this->getExitStatus(),
-            'Message'   => $this->getExitMessage(),
-            'Expires'   => $expiry,
-            'Logs'      => $this->log()->toArray(),
-        ));
     }
 }
