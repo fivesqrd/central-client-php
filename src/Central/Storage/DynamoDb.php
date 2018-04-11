@@ -40,6 +40,7 @@ class DynamoDb
         );
 
         foreach ($values as $key => $value) {
+            
             if ($value === null || $value == '') {
                 /* empty strings are not allowed in DynamoDb */
                 continue;
