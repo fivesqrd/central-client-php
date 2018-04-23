@@ -1,37 +1,61 @@
 # Central
-Utility for managing console scripts
+Central log for console scripts
+
+```
+composer require fivesqrd/central:1.0.*
+```
+
+## Setup ##
+
+```
+$config = [
+    'namespace' => null,
+    'adapter'   => null, // Aws|Bego
+    'options'   => [ // Adapter specific options
+        'table'     => null, // Required by both Bego and Aws
+        'client'    => new Aws\DynamoDb\DynamoDbClient($aws),
+        'marshaler' => new Aws\DynamoDb\Marshaler()
+    ], 
+];
+```
 
 ## Basic Example ##
 ```
-/* Start the job logging */
-$job = Central::job('My-Test-Job', $argv)->started();
+$job = Central::job($config);
 
-/* Instantiate the logger */
-$log = Central::log();
+$job->start('MyTestScript', function($log) {
+         
+     //do something here
 
-/* Perform the work required */
-try {
-    $log->debug("Starting up");
+     $log->debug('Something was done');
 
-    foreach ($i = 0; $i < 10; $i++) {
-        $log->append("Working on line {$i}");
-    }
+     return 'Everything was done ok';
+});
 
-    $job->setExitMessage("Completed {$i} steps}");
+/* Store log for 30 days */
+$job->save(strtotime('+ 30 days'));
 
-    /* Stop the recording */
-    $job->finished($log, true);
+/* Get the job status */
+echo $job->status();
+```
 
-} catch (Exception $e) {
-    $job->finished($log, $e);
-}
+## Executing inside a class ##
+```
+$job = Central::job($config)
+    ->start(self::class, array($this, '_execute'))
+    ->save(strtotime('+ 30 days'));
+```
 
-/* Persist logs for 30 days */
-Central::save(
-    ['interface' => $job, 'log' => $log], strtotime('+ 30 days')
-);
-
+## Realtime debug output ##
+```
 /* Output debug info to stdout as well */
-print_r($log->toArray());
-echo $job->getSummary() . "\n";
+print_r($job->log()->toArray());
+```
+
+## Atomic locking ##
+```
+$job = Central::job($config)
+    ->lock()
+    ->start(self::class, array($this, '_execute'))
+    ->save(strtotime('+ 30 days'));
 ```

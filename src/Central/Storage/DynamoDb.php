@@ -2,7 +2,6 @@
 namespace Central\Storage;
 
 use Central\Payload;
-use Aws\DynamoDb as Aws;
 
 class DynamoDb
 {
@@ -15,18 +14,16 @@ class DynamoDb
     public function __construct($config)
     {
         $this->_config = $config;
-        $this->_marshaler = new Aws\Marshaler();
     }
 
-    public function getClient()
+    public function client()
     {
-        if ($this->_dynamo) {
-            return $this->_dynamo;
-        }
+        return $this->_config['options']['client'];
+    }
 
-        $this->_dynamo = new Aws\DynamoDbClient($this->_config['aws']);
-
-        return $this->_dynamo;
+    public function marshaler()
+    {
+        return $this->_config['options']['marshaler'];
     }
 
     protected function _getAttributes($values)
@@ -52,19 +49,21 @@ class DynamoDb
         return $attributes;
     }
 
-    public function add(Payload $payload)
+    public function put(Payload $payload)
     {
         $result = $this->getClient()->putItem([
-            'Item'      => $this->_marshaler->marshalItem(
+            'Item'      => $this->marshaler()->marshalItem(
                 $this->_getAttributes($payload->toArray())
             ),
-            'TableName' => $this->_config['table'],
+            'TableName' => $this->_config['options']['table'],
         ]);
 
         $response = $result->get('@metadata');
 
         if ($response['statusCode'] != 200) {
-            throw new Exception("DynamoDb returned unsuccessful response code: {$response['statusCode']}");
+            throw new Exception(
+                "DynamoDb returned unsuccessful response code: {$response['statusCode']}"
+            );
         }
 
         return true;
