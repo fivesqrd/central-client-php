@@ -57,10 +57,10 @@ class Instance
             $this->_job->setExitMessage($message);
 
             /* Stop the recording */
-            $this->_job->finished($log, true);
+            $this->_job->finished($this->_log, true);
 
         } catch (\Exception $e) {
-            $this->_job->finished($log, $e);
+            $this->_job->finished($this->_log, $e);
         }
 
         return $this;
