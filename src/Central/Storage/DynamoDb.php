@@ -51,7 +51,7 @@ class DynamoDb
 
     public function put(Payload $payload)
     {
-        $result = $this->getClient()->putItem([
+        $result = $this->client()->putItem([
             'Item'      => $this->marshaler()->marshalItem(
                 $this->_getAttributes($payload->toArray())
             ),

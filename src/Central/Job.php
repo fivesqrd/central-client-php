@@ -7,6 +7,8 @@ class Job
 
     protected $_finished;
 
+    protected $_timestamp;
+
     protected $_name;
 
     protected $_status;

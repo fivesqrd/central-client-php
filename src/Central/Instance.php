@@ -74,7 +74,7 @@ class Instance
             );
         }
 
-        $payload = new Central\Payload(
+        $payload = new Payload(
             ['interface' => $this->_job, 'log' => $this->_log], $expiry
         );
 
@@ -82,12 +82,12 @@ class Instance
 
         switch ($this->_config['adapter']) {
             case 'Aws':
-                $storage = new Central\Storage\DynamoDb(
+                $storage = new Storage\DynamoDb(
                     $this->_config
                 );
                 break;
             case 'Bego':
-                $storage = new Central\Storage\Bego(
+                $storage = new Storage\Bego(
                     $this->_config
                 );
                 break;
