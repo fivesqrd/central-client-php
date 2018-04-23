@@ -21,9 +21,9 @@ class Instance
         $this->_log = $log;
     }
 
-    public function lock()
+    public function lock($object)
     {
-         $this->_lock = $this->_mutex->lock($this->_job->getName())->acquire();
+         $this->_lock = $object->lock($this->_job->getName())->acquire();
 
          return $this;
     }
@@ -50,6 +50,8 @@ class Instance
     public function start(callable $callback)
     {
         try {
+            $this->_job->started();
+            
             $message = call_user_func(
                 $callback, $this->_log
             );
