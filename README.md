@@ -23,7 +23,7 @@ $config = [
 ```
 $job = Central::job($config);
 
-$job->start('MyTestScript', function($log) {
+$job->instance('MyScriptName')->start(function($log) {
          
      //do something here
 
@@ -42,7 +42,8 @@ echo $job->status();
 ## Executing inside a class ##
 ```
 $job = Central::job($config)
-    ->start(self::class, array($this, '_execute'))
+    ->instance(self::class)
+    ->start(array($this, '_execute'))
     ->save(strtotime('+ 30 days'));
 ```
 
@@ -55,6 +56,7 @@ print_r($job->log()->toArray());
 ## Atomic locking ##
 ```
 $job = Central::job($config)
+    ->instance(self::class)
     ->lock()
     ->start(self::class, array($this, '_execute'))
     ->save(strtotime('+ 30 days'));
