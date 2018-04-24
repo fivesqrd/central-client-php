@@ -83,7 +83,9 @@ class Instance
             ['interface' => $this->_job, 'log' => $this->_log], $expiry
         );
 
-        $this->_record = $this->_storage()->put($payload->attributes());
+        $this->_record = $this->_storage()->put(
+            $payload->attributes($this->_config['namespace'])
+        );
 
         return $this;
     }
