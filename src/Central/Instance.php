@@ -25,7 +25,7 @@ class Instance
 
     public function lock($object)
     {
-        /* Todo make this work */
+        /* Todo make locking work */
         $this->_lock = $object->lock($this->_job->getName())->acquire();
 
         return $this;
@@ -83,7 +83,7 @@ class Instance
             ['interface' => $this->_job, 'log' => $this->_log], $expiry
         );
 
-        $this->_record = $this->_storage->put($payload->attributes());
+        $this->_record = $this->_storage()->put($payload->attributes());
 
         return $this;
     }
