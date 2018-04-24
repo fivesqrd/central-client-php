@@ -7,7 +7,7 @@ class Central
         'namespace' => null,
         'adapter'   => null, // Aws|Bego
         'options'   => [ // Adapter specific options
-            'table'  => null, // Required by both Bego and Aws
+            'table'  => null, // Required by Aws
             'client' => null
         ], 
     ];

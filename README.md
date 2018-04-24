@@ -7,14 +7,30 @@ composer require fivesqrd/central:1.0.*
 
 ## Setup ##
 
+Using AWS SDK
 ```
 $config = [
-    'namespace' => null,
-    'adapter'   => null, // Aws|Bego
+    'namespace' => 'My-App-Name',
+    'adapter'   => 'Aws', 
     'options'   => [ // Adapter specific options
-        'table'     => null, // Required by both Bego and Aws
+        'table'     => null, 
         'client'    => new Aws\DynamoDb\DynamoDbClient($aws),
         'marshaler' => new Aws\DynamoDb\Marshaler()
+    ], 
+];
+```
+
+Using the Bego library
+```
+$db = new Bego\Database(
+    new Aws\DynamoDb\DynamoDbClient($config), new Aws\DynamoDb\Marshaler()
+);
+
+$config = [
+    'namespace' => 'My-App-Name',
+    'adapter'   => 'Bego',
+    'options'   => [ // Adapter specific options
+        'client'    => $db->table(new App\MyTables\Logs()),
     ], 
 ];
 ```
@@ -51,6 +67,10 @@ $job = Central::job($config)
 ```
 /* Output debug info to stdout as well */
 print_r($job->log()->toArray());
+
+/* Output the same log entry saved to storage */
+print_r($job->record());
+
 ```
 
 ## Atomic locking ##

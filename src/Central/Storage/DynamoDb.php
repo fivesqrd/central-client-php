@@ -26,35 +26,10 @@ class DynamoDb
         return $this->_config['options']['marshaler'];
     }
 
-    protected function _getAttributes($values)
-    {
-        if (!isset($this->_config['namespace'])) {
-            throw new Exception('Namespace not provided in configuration');
-        }
-
-        $attributes = array(
-            'Namespace' => (string) $this->_config['namespace']
-        );
-
-        foreach ($values as $key => $value) {
-            
-            if ($value === null || $value == '') {
-                /* empty strings are not allowed in DynamoDb */
-                continue;
-            }
-
-            $attributes[$key] = $value;
-        }
-
-        return $attributes;
-    }
-
-    public function put(Payload $payload)
+    public function put($values)
     {
         $result = $this->client()->putItem([
-            'Item'      => $this->marshaler()->marshalItem(
-                $this->_getAttributes($payload->toArray())
-            ),
+            'Item'      => $this->marshaler()->marshalItem($values),
             'TableName' => $this->_config['options']['table'],
         ]);
 
@@ -66,6 +41,6 @@ class DynamoDb
             );
         }
 
-        return true;
+        return $values;
     }
 }

@@ -14,6 +14,8 @@ class Instance
 
     protected $_lock = false;
 
+    protected $_record;
+
     public function __construct($config, $job, $log, $mutex = null)
     {
         $this->_config = $config;
@@ -23,9 +25,10 @@ class Instance
 
     public function lock($object)
     {
-         $this->_lock = $object->lock($this->_job->getName())->acquire();
+        /* Todo make this work */
+        $this->_lock = $object->lock($this->_job->getName())->acquire();
 
-         return $this;
+        return $this;
     }
 
     public function log()
@@ -51,7 +54,7 @@ class Instance
     {
         try {
             $this->_job->started();
-            
+
             $message = call_user_func(
                 $callback, $this->_log
             );
@@ -80,23 +83,32 @@ class Instance
             ['interface' => $this->_job, 'log' => $this->_log], $expiry
         );
 
-        /* TODO: add support for bego adapter */
+        $this->_record = $this->_storage->put($payload->attributes());
 
+        return $this;
+    }
+
+    protected function _storage()
+    {
         switch ($this->_config['adapter']) {
             case 'Aws':
-                $storage = new Storage\DynamoDb(
-                    $this->_config
-                );
+                $storage = new Storage\DynamoDb($this->_config);
                 break;
             case 'Bego':
-                $storage = new Storage\Bego(
-                    $this->_config
+                $storage = new Storage\Bego($this->_config);
+                break;
+            default:
+                throw new \Exception(
+                    "Invalid storage adapter: '{$this->_config['adapter']}'"
                 );
                 break;
         }
 
-        $storage->put($payload);
+        return $storage;
+    }
 
-        return $this;
+    public function record()
+    {
+        return $this->_record;
     }
 }

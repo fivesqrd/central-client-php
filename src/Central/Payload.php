@@ -11,7 +11,7 @@ class Payload
 
     protected $_log;
 
-    const VERSION = '0.3.0';
+    const VERSION = '1.0.0';
 
     public function __construct($spec, $expiry = null)
     {
@@ -44,5 +44,28 @@ class Payload
             'Entries'   => $this->_log->toArray(),
             'Queries'   => $this->_profile ? $this->_profile->toArray() : array()
         );
+    }
+
+    public function attributes($namespace)
+    {
+        if (!$namespace) {
+            throw new Exception('Namespace not provided in configuration');
+        }
+
+        $attributes = array(
+            'Namespace' => (string) $namespace
+        );
+
+        foreach ($this->toArray() as $key => $value) {
+            
+            if ($value === null || $value == '') {
+                /* empty strings are not allowed in DynamoDb */
+                continue;
+            }
+
+            $attributes[$key] = $value;
+        }
+
+        return $attributes;
     }
 }
