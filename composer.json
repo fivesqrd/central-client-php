@@ -9,8 +9,8 @@
 		"fivesqrd/mutex": "0.3.x-dev"
     },
     "autoload": {
-        "psr-0": {
-            "Central": "src"
+        "psr-4": { 
+            "Fivesqrd\\Central\\": "src/"
         }
     },
     "license": ["MIT License"],
@@ -20,5 +20,12 @@
             "email": "christian@fivesqrd.com",
             "role": "Developer"
         }
-    ]
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fivesqrd\\Central\\Laravel\\CentralServiceProvider"
+            ]
+        }
+    }
 }
