@@ -1,7 +1,7 @@
 <?php
-namespace Central\Storage;
+namespace Fivesqrd\Central\Storage;
 
-use Central\Payload;
+use Fivesqrd\Central\Payload;
 
 class DynamoDb
 {

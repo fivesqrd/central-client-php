@@ -1,5 +1,5 @@
 <?php
-namespace Central\Storage;
+namespace Fivesqrd\Central\Storage;
 
 class Exception extends \Exception
 {
