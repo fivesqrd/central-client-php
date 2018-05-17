@@ -1,48 +1,96 @@
 # Central
-Utility for managing console scripts
+Central log for console scripts
+
+```
+composer require fivesqrd/central:1.1.*
+```
+
+## Setup ##
+
+Using AWS SDK
+```
+$config = [
+    'namespace' => 'My-App-Name',
+    'adapter'   => 'Aws', 
+    'options'   => [ // Adapter specific options
+        'table'     => null, 
+        'client'    => new Aws\DynamoDb\DynamoDbClient($aws),
+        'marshaler' => new Aws\DynamoDb\Marshaler()
+    ], 
+];
+```
+
+Using the Bego library
+```
+$db = new Bego\Database(
+    new Aws\DynamoDb\DynamoDbClient($config), new Aws\DynamoDb\Marshaler()
+);
+
+$config = [
+    'namespace' => 'My-App-Name',
+    'adapter'   => 'Bego',
+    'options'   => [ // Adapter specific options
+        'client'    => $db->table(new App\MyTables\Logs()),
+    ], 
+];
+```
+
+With Laravel 5
+Setup is automatically done in Laravel
 
 ## Basic Example ##
 ```
-/* Start the job logging */
-$job = Central::job('My-Test-Job', $argv)->started();
+use Fivesqrd\Central;
 
-/* Instantiate the logger */
-$log = Central::log();
+$job = Central\Factory::job($config);
 
-/* Perform the work required */
-try {
-    $log->debug("Starting up");
+$job->instance('MyScriptName')->start(function($log) {
+         
+     //do something here
 
-    foreach ($i = 0; $i < 10; $i++) {
-        $log->append("Working on line {$i}");
-    }
+     $log->debug('Something was done');
 
-    $job->setExitMessage("Completed {$i} steps}");
+     return 'Everything was done ok';
+});
 
-    /* Stop the recording */
-    $job->finished($log, true);
+/* Store log for 30 days */
+$job->save(strtotime('+ 30 days'));
 
-} catch (Exception $e) {
-    $job->finished($log, $e);
-}
-
-/* Persist logs for 30 days */
-Central::save(
-    ['interface' => $job, 'log' => $log], strtotime('+ 30 days')
-);
-
-/* Output debug info to stdout as well */
-print_r($log->toArray());
-echo $job->getSummary() . "\n";
+/* Get the job status */
+echo $job->status();
 ```
-<<<<<<< Updated upstream
-=======
-$job = Central::job($config)
+
+## Executing inside a class ##
+```
+use Fivesqrd\Central;
+
+$job = Central\Factory::job($config)
+    ->instance(self::class)
+    ->start(array($this, '_execute'))
+    ->save(strtotime('+ 30 days'));
+```
+
+## Realtime debug output ##
+```
+/* Output debug info to stdout as well */
+print_r($job->log()->toArray());
+
+/* Output the same log entry saved to storage */
+print_r($job->record());
+
+```
+
+## Atomic locking ##
+```
+use Fivesqrd\Central;
+
+$job = Central\Factory::job($config)
     ->instance(self::class)
     ->lock()
     ->start(self::class, array($this, '_execute'))
     ->save(strtotime('+ 30 days'));
 ```
+
 
 ## Laravel 5 ##
 
@@ -59,7 +107,7 @@ AWS_ENDPOINT=
 ```
 
 Using it in a command class:
- ```
+```
     /**
      * Execute the console command.
      *
@@ -71,17 +119,14 @@ Using it in a command class:
             ->instance(self::class)
             ->start(array($this, '_execute'))
             ->save(strtotime('+ 30 days'));
-
+    
         /* logic here */
-
         $this->info("Command completed with: {$job->status()}");;
     }
 
     protected function _execute($log)
     {
         $log->debug('Job started at ' . date('Y-m-d H:i:s'));
-
         return 'It worked';
     }
 ```
->>>>>>> Stashed changes
