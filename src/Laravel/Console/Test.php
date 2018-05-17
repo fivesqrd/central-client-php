@@ -49,7 +49,7 @@ class Test extends Command
         $this->info("Command completed with: {$job->status()}");
     }
 
-    protected function _execute($log)
+    public function _execute($log)
     {
         $log->debug('Job started at ' . date('Y-m-d H:i:s'));
         
