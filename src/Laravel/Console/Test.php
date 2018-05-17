@@ -38,7 +38,7 @@ class Test extends Command
      */
     public function handle()
     {
-        $job = $this->app->make('central')//resolve('central')
+        $job = resolve('central')
             ->instance(self::class)
             ->start(array($this, '_execute'))
             ->save(strtotime('+ 30 days'));
