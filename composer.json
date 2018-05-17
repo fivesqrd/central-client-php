@@ -7,8 +7,8 @@
 	"require-dev": {
     },
     "autoload": {
-        "psr-0": {
-            "Central": "src"
+        "psr-4": { 
+            "Fivesqrd\\Central\\": "src/"
         }
     },
     "authors": [
@@ -17,5 +17,12 @@
             "email": "christian@fivesqrd.com",
             "role": "Developer"
         }
-    ]
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Fivesqrd\\Central\\Laravel\\CentralServiceProvider"
+            ]
+        }
+    }
 }

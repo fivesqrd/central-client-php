@@ -1,5 +1,5 @@
 <?php
-namespace Central;
+namespace Fivesqrd\Central;
 
 class Log
 {
