@@ -2,7 +2,7 @@
 Central log for console scripts
 
 ```
-composer require fivesqrd/central:1.1.*
+composer require fivesqrd/central:1.2.*
 ```
 
 ## Setup ##
