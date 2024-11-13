@@ -31,6 +31,11 @@ class Instance
         return $this;
     }
 
+    public function job()
+    {
+        return $this->_job;
+    }
+
     public function log()
     {
         if (!$this->_log) {
